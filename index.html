@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head><link rel="manifest" href="manifest.json">
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+            navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                console.log('ServiceWorker registrado con éxito: ', registration.scope);
+            }, function(err) {
+                console.log('Fallo en el registro del ServiceWorker: ', err);
+            });
+        });
+    }
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Preparación Sísmica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            background-color: #e2e8f0;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        .tab-button {
+            flex-grow: 1;
+            padding: 15px 10px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #4a5568;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 2px solid #3182ce;
+            color: #3182ce;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content section {
+            display: none;
+        }
+        .content section.active {
+            display: block;
+        }
+        h2 {
+            color: #2d3748;
+            margin-top: 0;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #e9ecef;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+        }
+        li input[type="checkbox"] {
+            margin-right: 15px;
+            transform: scale(1.5);
+        }
+        input[type="text"], textarea {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+        }
+        .info-box {
+            background: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #fbc02d;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tabs">
+        <button class="tab-button active" onclick="showTab('antes')">Antes</button>
+        <button class="tab-button" onclick="showTab('durante')">Durante</button>
+        <button class="tab-button" onclick="showTab('despues')">Después</button>
+    </div>
+    <div class="content">
+        <section id="antes" class="active">
+            <h2>Antes del Sismo: Preparación</h2>
+            <ul>
+                <li>
+                    <input type="checkbox" id="kit_emergencia" onclick="saveProgress('kit_emergencia')">
+                    Preparar kit de emergencia
+                </li>
+                <li>
+                    <input type="checkbox" id="plan_familiar" onclick="saveProgress('plan_familiar')">
+                    Crear plan de emergencia familiar
+                </li>
+                <li>
+                    <input type="checkbox" id="asegurar_muebles" onclick="saveProgress('asegurar_muebles')">
+                    Asegurar muebles y objetos pesados
+                </li>
+                <li>
+                    <input type="checkbox" id="simulacro" onclick="saveProgress('simulacro')">
+                    Practicar simulacros
+                </li>
+            </ul>
+
+            <div class="info-box">
+                <h4>Tu Plan de Emergencia Familiar</h4>
+                <p>Guarda aquí los datos importantes.</p>
+                <strong>Contacto de Emergencia:</strong>
+                <input type="text" id="contacto_emergencia" placeholder="Nombre y teléfono" oninput="saveText('contacto_emergencia')">
+                <strong>Punto de Encuentro:</strong>
+                <input type="text" id="punto_encuentro" placeholder="Lugar de reunión" oninput="saveText('punto_encuentro')">
+            </div>
+        </section>
+
+        <section id="durante">
+            <h2>Durante el Sismo: Reacción</h2>
+            <div class="info-box">
+                <h3>Agáchate, Cúbrete y Sujétate</h3>
+                <ul>
+                    <li>**Agáchate** en el suelo.</li>
+                    <li>**Cúbrete** debajo de una mesa o escritorio resistente.</li>
+                    <li>**Sujétate** a tu refugio hasta que el movimiento pare.</li>
+                </ul>
+            </div>
+            <p>Si estás en la calle, busca un área abierta lejos de edificios y postes. Si estás en un auto, detén el auto en un lugar seguro.</p>
+        </section>
+
+        <section id="despues">
+            <h2>Después del Sismo: Recuperación</h2>
+            <div class="info-box">
+                <p>Prepárate para las réplicas. Revisa a tu alrededor y ten cuidado con cables, vidrios rotos o fugas de gas.</p>
+                <ul>
+                    <li>**No uses el ascensor.**</li>
+                    <li>**Usa el teléfono solo para emergencias.**</li>
+                    <li>**Escucha la radio de pilas** para recibir información oficial.</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+</div>
+
+<script>
+    function showTab(tabId) {
+        // Oculta todas las secciones
+        document.querySelectorAll('.content section').forEach(section => {
+            section.classList.remove('active');
+        });
+        // Desactiva todos los botones
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.classList.remove('active');
+        });
+        // Muestra la sección y activa el botón correspondiente
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab-button[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+
+    function saveProgress(id) {
+        const checkbox = document.getElementById(id);
+        localStorage.setItem(id, checkbox.checked);
+    }
+
+    function saveText(id) {
+        const input = document.getElementById(id);
+        localStorage.setItem(id, input.value);
+    }
+
+    function loadProgress() {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            const savedState = localStorage.getItem(checkbox.id);
+            if (savedState !== null) {
+                checkbox.checked = savedState === 'true';
+            }
+        });
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            const savedText = localStorage.getItem(input.id);
+            if (savedText !== null) {
+                input.value = savedText;
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProgress);
+</script>
+
+</body>
+</html>
